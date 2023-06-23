@@ -1,22 +1,22 @@
 package ifnmg.edu.com.br.websimplemessage;
 
-/**
- *
- * @author Lucas Flavio<lucasfgm at ifnmg.edu.br>
- */
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
-
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.jms.*;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSDestinationDefinition;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ *
+ * @author Lucas Flavio<lucasfgm at ifnmg.edu.br>
+ */
 @JMSDestinationDefinition(
         name = "java:comp/jms/webappQueue",
         interfaceName = "jakarta.jms.Queue",
@@ -24,8 +24,8 @@ import jakarta.jms.*;
 @Named
 @RequestScoped
 public class SenderBean {
-    
-     static final Logger logger = Logger.getLogger("SenderBean");
+
+    static final Logger logger = Logger.getLogger("SenderBean");
     @Inject
     private JMSContext context;
     @Resource(lookup = "java:comp/jms/webappQueue")
@@ -67,8 +67,8 @@ public class SenderBean {
             String text = "Message from producer: " + messageText;
             context.createProducer().send(queue, text);
 
-            FacesMessage facesMessage =
-                    new FacesMessage("Sent message: " + text);
+            FacesMessage facesMessage
+                    = new FacesMessage("Sent message: " + text);
             FacesContext.getCurrentInstance().addMessage(null, facesMessage);
         } catch (JMSRuntimeException t) {
             logger.log(Level.SEVERE,
@@ -76,5 +76,5 @@ public class SenderBean {
                     t.toString());
         }
     }
-    
+
 }

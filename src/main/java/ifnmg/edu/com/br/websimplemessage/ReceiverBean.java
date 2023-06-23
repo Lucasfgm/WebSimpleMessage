@@ -4,26 +4,27 @@
  */
 package ifnmg.edu.com.br.websimplemessage;
 
-
-/**
- *
- * @author Lucas Flavio<lucasfgm at ifnmg.edu.br>
- */
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import jakarta.annotation.Resource;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.jms.*;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author Lucas Flavio<lucasfgm at ifnmg.edu.br>
+ */
 @Named
 @RequestScoped
 public class ReceiverBean {
-    
+
     static final Logger logger = Logger.getLogger("ReceiverBean");
     @Inject
     private JMSContext context;
@@ -47,12 +48,12 @@ public class ReceiverBean {
             String text = receiver.receiveBody(String.class, 1000);
 
             if (text != null) {
-                FacesMessage facesMessage =
-                        new FacesMessage("Reading message: " + text);
+                FacesMessage facesMessage
+                        = new FacesMessage("Reading message: " + text);
                 FacesContext.getCurrentInstance().addMessage(null, facesMessage);
             } else {
-                FacesMessage facesMessage =
-                        new FacesMessage("No message received after 1 second");
+                FacesMessage facesMessage
+                        = new FacesMessage("No message received after 1 second");
                 FacesContext.getCurrentInstance().addMessage(null, facesMessage);
             }
         } catch (JMSRuntimeException t) {
@@ -61,5 +62,5 @@ public class ReceiverBean {
                     t.toString());
         }
     }
-    
+
 }
